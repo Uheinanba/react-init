@@ -6,8 +6,8 @@ class Counter extends Component {
     super(props);
   }
   render() {
-    const { value, onIncrement, onDecrement } = this.props;
-
+    const { value, onIncrement, onDecrement, actions } = this.props;
+    // actions.decrement
     return (
       <p>
         Clicked: {value} times <br />
