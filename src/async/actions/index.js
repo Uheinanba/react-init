@@ -1,39 +1,41 @@
-export const REQUEST_POSTS = "REQUEST_POSTS";
-export const RECEIVE_POSTS = "RECEIVE_POSTS";
-export const SELECT_REDDIT = "SELECT_REDDIT";
-export const INVALIDATE_REDDIT = "INVALIDATE_REDDIT";
+export const REQUEST_POSTS = 'REQUEST_POSTS';
+export const RECEIVE_POSTS = 'RECEIVE_POSTS';
+export const SELECT_SUBREDDIT = 'SELECT_SUBREDDIT';
+export const INVALIDATE_SUBREDDIT = 'INVALIDATE_SUBREDDIT';
 
-export const selectReddit = reddit => ({
-  type: SELECT_REDDIT,
-  reddit
+export const selectSubreddit = subreddit => ({
+  type: SELECT_SUBREDDIT,
+  subreddit,
 });
 
-export const invalidateReddit = reddit => ({
-  type: INVALIDATE_REDDIT,
-  reddit
+export const invalidateSubreddit = subreddit => ({
+  type: INVALIDATE_SUBREDDIT,
+  subreddit,
 });
 
-export const reqestPosts = reddit => ({
+export const requestPosts = subreddit => ({
   type: REQUEST_POSTS,
-  reddit
+  subreddit,
 });
 
-export const receivePosts = (reddit, json) => ({
+export const receivePosts = (subreddit, json) => ({
   type: RECEIVE_POSTS,
-  reddit,
+  subreddit,
   posts: json.data.children.map(child => child.data),
-  receivePAt: Date.now()
+  receivedAt: Date.now(),
 });
 
-const fetchPosts = reddit => dispatch => {
-  dispatch(reqestPosts(reddit));
-  return fetch(`https://www.reddit.com/r/${reddit}.json`)
+// 请求post接口
+const fetchPosts = subreddit => dispatch => {
+  dispatch(requestPosts(subreddit));
+  return fetch(`https://www.reddit.com/r/${subreddit}.json`)
     .then(response => response.json())
-    .then(json => dispatch(receivePosts(reddit, json)));
+    .then(json => dispatch(receivePosts(subreddit, json)));
 };
 
-const shouldFetchPosts = (state, reddit) => {
-  const posts = state.postsByReddit[reddit];
+// 判断是否立即去请求 post接口
+const shouldFetchPosts = (state, subreddit) => {
+  const posts = state.postsBySubreddit[subreddit];
   if (!posts) {
     return true;
   }
@@ -43,8 +45,9 @@ const shouldFetchPosts = (state, reddit) => {
   return posts.didInvalidate;
 };
 
-export const fetchPostsIfNeeded = reddit => (dispatch, getState) => {
-  if (shouldFetchPosts(getState(), reddit)) {
-    return dispatch(fetchPosts(reddit));
+// 通过middleware来创建 action creator
+export const fetchPostsIfNeeded = subreddit => (dispatch, getState) => {
+  if (shouldFetchPosts(getState(), subreddit)) {
+    return dispatch(fetchPosts(subreddit));
   }
 };
