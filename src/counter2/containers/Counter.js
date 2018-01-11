@@ -1,11 +1,11 @@
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
-import * as CounterActions from "../actions";
-import { increment, decrement } from "../actions";
-import Counter from "../components/Counter";
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import * as CounterActions from '../actions';
+import { increment, decrement } from '../actions';
+import Counter from '../components/Counter';
 
 const mapStateToProps = (state, ownProps) => ({
-  value: state.counter
+  value: state.counter,
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
@@ -15,20 +15,20 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
   onDecrement: () => {
     dispatch(decrement());
   },
-  actions: bindActionCreators(CounterActions, dispatch)
+  actions: bindActionCreators(CounterActions, dispatch),
 });
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
-  console.log(stateProps, dispatchProps, ownProps);
+  // console.log(stateProps, dispatchProps, ownProps);
   return Object.assign({}, ownProps, {
     value: stateProps.value,
     onIncrement: () => dispatchProps.increment(),
-    onDecrement: () => dispatchProps.decrement()
+    onDecrement: () => dispatchProps.decrement(),
   });
 };
 // const CounterContainer = connect(mapStateToProps, mapDispatchToProps)(Counter);
 const CounterContainer = connect(mapStateToProps, CounterActions, mergeProps)(
-  Counter
+  Counter,
 );
 
 export default CounterContainer;
