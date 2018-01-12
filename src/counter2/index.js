@@ -6,8 +6,9 @@ import App from './counter2/containers/Counter';
 import reducer from './counter2/reducers';
 import logger from 'redux-logger';
 import logger1 from './counter2/middleware/logger1';
+import logger2 from './counter2/middleware/logger2';
 
-const store = createStore(reducer, applyMiddleware(logger1));
+const store = createStore(reducer, applyMiddleware(logger1, logger2));
 const rootEl = document.getElementById('root');
 
 render(

@@ -1,18 +1,63 @@
 import React from 'react';
-import { render } from 'react-dom';
-import { createStore, applyMiddleware } from 'redux';
-import { Provider } from 'react-redux';
-import App from './counter2/containers/Counter';
-import reducer from './counter2/reducers';
-import logger from 'redux-logger';
-import logger1 from './counter2/middleware/logger1';
+import ReactDOM from 'react-dom';
+import { createStore } from 'redux';
+import Counter from './counter/components/Counter';
+import counter from './counter/reducers';
 
-const store = createStore(reducer, applyMiddleware(logger1));
+const store = createStore(counter);
 const rootEl = document.getElementById('root');
 
-render(
-  <Provider store={store}>
-    <App />
-  </Provider>,
-  rootEl,
-);
+/* console.log(store.getState());
+const unsubscribe = store.subscribe(() => console.log(store.getState()));
+store.dispatch({ type: "INCREMENT" });
+store.dispatch({ type: "INCREMENT" });
+unsubscribe();
+store.dispatch({ type: "INCREMENT" }); */
+
+const dispatchAndLog = (store, action) => {
+  console.log('dispatching', action);
+  store.dispatch(action);
+  console.log('next state', store.getState());
+};
+
+const increment = store => {
+  const action = { type: 'INCREMENT' };
+  console.log('dispatching', action);
+  store.dispatch(action);
+  console.log('next state', store.getState());
+};
+
+const logger = store => {
+  let next = store.dispatch;
+  return action => {
+    console.log('dispatching', action);
+    const result = next(action);
+    console.log('next state', store.getState());
+
+    return result;
+  };
+};
+
+const applyMiddlewareByMonkeypatching = (store, middlewares) => {
+  middlewares = middlewares.slice();
+  middlewares.reverse();
+
+  middlewares.forEach(middleware => {
+    store.dispatch = middleware(store);
+  });
+};
+
+applyMiddlewareByMonkeypatching(store, [logger]);
+
+const render = () =>
+  ReactDOM.render(
+    <Counter
+      value={store.getState()}
+      onIncrement={() => increment(store)}
+      onDecrement={() => store.dispatch({ type: 'DECREMENT' })}
+    />,
+    rootEl,
+  );
+
+render();
+store.subscribe(render);

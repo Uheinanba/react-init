@@ -1,13 +1,11 @@
-import React from "react";
-import ReactDOM from "react-dom";
-import { createStore } from "redux";
-import Counter from "./counter/components/Counter";
-import counter from "./counter/reducers";
-
-import "./index.css";
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { createStore } from 'redux';
+import Counter from './counter/components/Counter';
+import counter from './counter/reducers';
 
 const store = createStore(counter);
-const rootEl = document.getElementById("root");
+const rootEl = document.getElementById('root');
 
 /* console.log(store.getState());
 const unsubscribe = store.subscribe(() => console.log(store.getState()));
@@ -20,10 +18,10 @@ const render = () =>
   ReactDOM.render(
     <Counter
       value={store.getState()}
-      onIncrement={() => store.dispatch({ type: "INCREMENT" })}
-      onDecrement={() => store.dispatch({ type: "DECREMENT" })}
+      onIncrement={() => store.dispatch({ type: 'INCREMENT' })}
+      onDecrement={() => store.dispatch({ type: 'DECREMENT' })}
     />,
-    rootEl
+    rootEl,
   );
 
 render();
