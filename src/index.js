@@ -1,14 +1,18 @@
 import React from 'react';
 import { render } from 'react-dom';
-import { BrowserRouter as Router } from 'react-router-dom';
-import Root from './real-world/containers/Root';
-import configureStore from './real-world/store/configureStore';
+import { createStore, applyMiddleware } from 'redux';
+import { Provider } from 'react-redux';
+import App from './counter2/containers/Counter';
+import reducer from './counter2/reducers';
+import logger from 'redux-logger';
+import logger1 from './counter2/middleware/logger1';
 
-const store = configureStore();
+const store = createStore(reducer, applyMiddleware(logger1));
+const rootEl = document.getElementById('root');
 
 render(
-  <Router>
-    <Root store={store} />
-  </Router>,
-  document.getElementById('root'),
+  <Provider store={store}>
+    <App />
+  </Provider>,
+  rootEl,
 );
