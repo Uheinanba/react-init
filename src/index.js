@@ -1,23 +1,14 @@
 import React from 'react';
 import { render } from 'react-dom';
-import { createStore, applyMiddleware } from 'redux';
-import { Provider } from 'react-redux';
-import thunk from 'redux-thunk';
-import { createLogger } from 'redux-logger';
-import reducer from './async/reducers';
-import App from './async/containers/App';
+import { BrowserRouter as Router } from 'react-router-dom';
+import Root from './real-world/containers/Root';
+import configureStore from './real-world/store/configureStore';
 
-const middleware = [thunk];
-
-if (process.env.NODE_ENV !== 'production') {
-  middleware.push(createLogger());
-}
-
-const store = createStore(reducer, applyMiddleware(...middleware));
+const store = configureStore();
 
 render(
-  <Provider store={store}>
-    <App />
-  </Provider>,
+  <Router>
+    <Root store={store} />
+  </Router>,
   document.getElementById('root'),
 );
