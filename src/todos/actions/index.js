@@ -1,16 +1,20 @@
 let nextTodoId = 0;
 export const addTodo = text => ({
   text,
-  type: "ADD_TODO",
-  id: nextTodoId++
+  type: 'ADD_TODO',
+  id: nextTodoId++,
 });
 
 export const setVisibilityFilter = filter => ({
   filter,
-  type: "SET_VISIBILITY_FILTER"
+  type: 'SET_VISIBILITY_FILTER',
 });
 
 export const toggleTodo = id => ({
   id,
-  type: "TOGGLE_TODO"
+  type: 'TOGGLE_TODO',
+});
+
+export const increment = () => ({
+  type: 'INCREMENT',
 });
