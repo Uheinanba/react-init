@@ -1,16 +1,38 @@
 import React from 'react';
-import { render } from 'react-dom';
-import { createStore } from 'redux';
-import { Provider } from 'react-redux';
-import App from './todos/App';
-import reducer from './todos/reducers';
+import ReactDOM from 'react-dom';
+import { createStore, applyMiddleware } from 'redux';
+import createSagaMiddleware from 'redux-saga';
+import { watchIncrementAsync } from './counter/saga';
+import Counter from './counter/components/Counter';
+import counter from './counter/reducers';
+// import { loadState, saveState } from './counter/storage';
 
-const store = createStore(reducer);
+const sagaMiddleware = createSagaMiddleware();
+
+const store = createStore(
+  counter,
+  // loadState(),
+  applyMiddleware(sagaMiddleware),
+);
+
+sagaMiddleware.run(watchIncrementAsync);
+
 const rootEl = document.getElementById('root');
 
-render(
-  <Provider store={store}>
-    <App />
-  </Provider>,
-  rootEl,
-);
+/* store.subscribe(() => {
+  saveState(store.getState());
+}); */
+
+const render = () =>
+  ReactDOM.render(
+    <Counter
+      data={store.getState()}
+      onIncrement={() => store.dispatch({ type: 'INCREMENT' })}
+      onDecrement={() => store.dispatch({ type: 'DECREMENT' })}
+      onIncrementAsync={() => store.dispatch({ type: 'INCREMENT_ASYNC' })}
+    />,
+    rootEl,
+  );
+
+render();
+store.subscribe(render);
